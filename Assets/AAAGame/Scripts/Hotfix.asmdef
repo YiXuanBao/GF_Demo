@@ -1,0 +1,23 @@
+{
+    "name": "Hotfix",
+    "rootNamespace": "",
+    "references": [
+        "UnityGameFramework.Runtime",
+        "GameFramework",
+        "Builtin.Runtime",
+        "Unity.TextMeshPro",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "UniTask",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

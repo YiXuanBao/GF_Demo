@@ -1,0 +1,21 @@
+{
+    "name": "Builtin.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "UnityGameFramework.Runtime",
+        "Unity.Addressables",
+        "HybridCLR.Runtime",
+        "Unity.TextMeshPro",
+        "Unity.ResourceManager",
+        "GameFramework"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
