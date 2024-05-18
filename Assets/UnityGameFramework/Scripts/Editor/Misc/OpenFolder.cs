@@ -53,19 +53,6 @@ namespace UnityGameFramework.Editor
             Execute(Application.temporaryCachePath);
         }
 
-#if UNITY_2018_3_OR_NEWER
-
-        /// <summary>
-        /// 打开 Console Log Path 文件夹。
-        /// </summary>
-        [MenuItem("Game Framework/Open Folder/Console Log Path", false, 14)]
-        public static void OpenFolderConsoleLogPath()
-        {
-            Execute(System.IO.Path.GetDirectoryName(Application.consoleLogPath));
-        }
-
-#endif
-
         /// <summary>
         /// 打开指定路径的文件夹。
         /// </summary>
@@ -84,7 +71,7 @@ namespace UnityGameFramework.Editor
                     break;
 
                 default:
-                    throw new GameFrameworkException(Utility.Text.Format("Not support open folder on '{0}' platform.", Application.platform));
+                    throw new GameFrameworkException(Utility.Text.Format("Not support open folder on '{0}' platform.", Application.platform.ToString()));
             }
         }
     }

@@ -26,6 +26,9 @@ public class BuiltinViewComponent : GameFrameworkComponent
     //[Header("Waiting View:")]
     //[SerializeField] GameObject waitingView = null;
 
+    ///[Header("Waiting View:")]
+    //[SerializeField] GameObject waitingView = null;
+
     //public void WaitAndShowVideoAd(float loadingOutTime, GameFrameworkAction onAdReady)
     //{
     //    adLoadingMask.SetActive(true);

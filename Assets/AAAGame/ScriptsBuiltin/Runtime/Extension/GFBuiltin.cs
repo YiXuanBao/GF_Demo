@@ -19,7 +19,7 @@ public class GFBuiltin : MonoBehaviour
     public static LocalizationComponent Localization { get; private set; }
     public static NetworkComponent Network { get; private set; }
     public static ProcedureComponent Procedure { get; private set; }
-    public static ResourceComponent Resource { get; private set; }
+    public static AddressableResourceComponent Resource { get; private set; }
     public static SceneComponent Scene { get; private set; }
     public static SettingComponent Setting { get; private set; }
     public static SoundComponent Sound { get; private set; }
@@ -37,14 +37,6 @@ public class GFBuiltin : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            var resCom = GameEntry.GetComponent<ResourceComponent>();
-            if (resCom != null)
-            {
-                var resTp = resCom.GetType();
-                var m_ResourceMode = resTp.GetField("m_ResourceMode", BindingFlags.Instance | BindingFlags.NonPublic);
-                m_ResourceMode.SetValue(resCom, AppSettings.Instance.ResourceMode);
-                GFBuiltin.LogInfo($"------------Set ResourceMode:{AppSettings.Instance.ResourceMode}------------");
-            }
         }
     }
 
@@ -62,7 +54,7 @@ public class GFBuiltin : MonoBehaviour
         GFBuiltin.Procedure = GameEntry.GetComponent<ProcedureComponent>();
         GFBuiltin.Localization = GameEntry.GetComponent<LocalizationComponent>();
         GFBuiltin.Network = GameEntry.GetComponent<NetworkComponent>();
-        GFBuiltin.Resource = GameEntry.GetComponent<ResourceComponent>();
+        GFBuiltin.Resource = GameEntry.GetComponent<AddressableResourceComponent>();
         GFBuiltin.FileSystem = GameEntry.GetComponent<FileSystemComponent>();
         GFBuiltin.Scene = GameEntry.GetComponent<SceneComponent>();
         GFBuiltin.Setting = GameEntry.GetComponent<SettingComponent>();

@@ -273,7 +273,7 @@ public static class AwaitExtension
     /// <summary>
     /// 加载资源（可等待）
     /// </summary>
-    public static UniTask<T> LoadAssetAsync<T>(this ResourceComponent resourceComponent, string assetName)
+    public static UniTask<T> LoadAssetAsync<T>(this AddressableResourceComponent resourceComponent, string assetName)
         where T : UnityEngine.Object
     {
 #if UNITY_EDITOR
@@ -310,7 +310,7 @@ public static class AwaitExtension
     /// <summary>
     /// 加载多个资源（可等待）
     /// </summary>
-    public static async UniTask<T[]> LoadAssetsAsync<T>(this ResourceComponent resourceComponent, string[] assetName) where T : UnityEngine.Object
+    public static async UniTask<T[]> LoadAssetsAsync<T>(this AddressableResourceComponent resourceComponent, string[] assetName) where T : UnityEngine.Object
     {
 #if UNITY_EDITOR
         TipsSubscribeEvent();

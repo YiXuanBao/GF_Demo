@@ -22,9 +22,8 @@ public class LoadHotfixDllProcedure : ProcedureBase
     protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
     {
         base.OnEnter(procedureOwner);
-#if !DISABLE_HYBRIDCLR
+
         GFBuiltin.Event.Subscribe(LoadHotfixDllEventArgs.EventId, OnLoadHotfixDllCallback);
-#endif
 
         PreloadAndInitData();
     }
@@ -47,19 +46,14 @@ public class LoadHotfixDllProcedure : ProcedureBase
                 return;
             }
             GFBuiltin.LogInfo("游戏启动");
-#if !DISABLE_HYBRIDCLR
+
             entryFunc?.Invoke(null, new object[] { true });
-#else
-            entryFunc?.Invoke(null, new object[] { false });
-#endif
         }
     }
 
     protected override void OnLeave(IFsm<IProcedureManager> procedureOwner, bool isShutdown)
     {
-#if !DISABLE_HYBRIDCLR
         GFBuiltin.Event.Unsubscribe(LoadHotfixDllEventArgs.EventId, OnLoadHotfixDllCallback);
-#endif
         base.OnLeave(procedureOwner, isShutdown);
     }
 
@@ -74,13 +68,13 @@ public class LoadHotfixDllProcedure : ProcedureBase
         loadedProgress = 0;
         hotfixListIsLoaded = true;
 
-#if !UNITY_EDITOR && !DISABLE_HYBRIDCLR
+#if !UNITY_EDITOR
         hotfixListIsLoaded = false;
         LoadAotDlls();
         LoadHotfixDlls();
 #endif
     }
-#if !DISABLE_HYBRIDCLR
+
     /// <summary>
     /// 补充元数据
     /// </summary>
@@ -123,13 +117,13 @@ public class LoadHotfixDllProcedure : ProcedureBase
                 {
                     var dllName = hotfixDlls[i];
                     var dllAsset = UtilityBuiltin.ResPath.GetHotfixDll(dllName);
+
                     GFBuiltin.Hotfix.LoadHotfixDll(dllAsset, this);
                 }
                 hotfixListIsLoaded = true;
             }
         }));
     }
-
 
     private void OnLoadHotfixDllCallback(object sender, GameEventArgs e)
     {
@@ -146,7 +140,7 @@ public class LoadHotfixDllProcedure : ProcedureBase
 
         loadedProgress++;
         GFBuiltin.BuiltinView.SetLoadingProgress(loadedProgress / totalProgress);
-
+        GFBuiltin.LogInfo((loadedProgress / totalProgress).ToString());
         //所有依赖dll加载完成后再加载Hotfix.dll
         if (loadedProgress + 1 == totalProgress)
         {
@@ -154,6 +148,5 @@ public class LoadHotfixDllProcedure : ProcedureBase
             GFBuiltin.Hotfix.LoadHotfixDll(mainDll, this);
         }
     }
-#endif
 }
 

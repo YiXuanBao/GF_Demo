@@ -3,11 +3,11 @@
     "rootNamespace": "",
     "references": [
         "UnityGameFramework.Runtime",
+        "GameFramework",
         "Unity.Addressables",
         "HybridCLR.Runtime",
         "Unity.TextMeshPro",
-        "Unity.ResourceManager",
-        "GameFramework"
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

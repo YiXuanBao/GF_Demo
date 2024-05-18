@@ -16,10 +16,10 @@ public class PreloadProcedure : ProcedureBase
     protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
     {
         base.OnEnter(procedureOwner);
-        GF.Event.Subscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
-        GF.Event.Subscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
-        GF.Event.Subscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
-        GF.Event.Subscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
+        //GF.Event.Subscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
+        //GF.Event.Subscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
+        //GF.Event.Subscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
+        //GF.Event.Subscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
         GF.Event.Subscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDicSuccess);
         GF.Event.Subscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDicFailure);
         GF.BuiltinView.ShowLoadingProgress();
@@ -31,10 +31,10 @@ public class PreloadProcedure : ProcedureBase
 
     protected override void OnLeave(IFsm<IProcedureManager> procedureOwner, bool isShutdown)
     {
-        GF.Event.Unsubscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
-        GF.Event.Unsubscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
-        GF.Event.Unsubscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
-        GF.Event.Unsubscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
+        //GF.Event.Unsubscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
+        //GF.Event.Unsubscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
+        //GF.Event.Unsubscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
+        //GF.Event.Unsubscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
         GF.Event.Unsubscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDicSuccess);
         GF.Event.Unsubscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDicFailure);
         base.OnLeave(procedureOwner, isShutdown);
@@ -61,10 +61,6 @@ public class PreloadProcedure : ProcedureBase
     }
     private void InitAppSettings()
     {
-        //if (string.IsNullOrWhiteSpace(GF.Setting.GetABTestGroup()))
-        //{
-        //    GF.Setting.SetABTestGroup("B");//设置A/B测试组; 应由服务器分配该新用户所属测试组
-        //}
         //初始化语言
         GameFramework.Localization.Language language;
 
@@ -79,7 +75,7 @@ public class PreloadProcedure : ProcedureBase
         {
             language = GameFramework.Localization.Language.English;//不支持的语言默认用英文
         }
-        //GF.Setting.SetLanguage(language, false);
+        GF.Setting.SetLanguage(language, false);
         GF.LogInfo($"初始化游戏设置. 语言:{language}");
     }
     /// <summary>

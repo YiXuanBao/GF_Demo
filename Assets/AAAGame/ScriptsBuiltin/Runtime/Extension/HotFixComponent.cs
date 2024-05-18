@@ -3,13 +3,10 @@ using GameFramework;
 using UnityGameFramework.Runtime;
 using System;
 using GameFramework.Resource;
-#if !DISABLE_HYBRIDCLR
 using HybridCLR;
-#endif
 
 public class HotFixComponent : GameFrameworkComponent
 {
-#if !DISABLE_HYBRIDCLR
     [SerializeField] HomologousImageMode mHomologousImageMode = HomologousImageMode.SuperSet;
     /// <summary>
     /// 加载热更文件
@@ -80,5 +77,4 @@ public class HotFixComponent : GameFrameworkComponent
     {
         return RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, mHomologousImageMode);
     }
-#endif
 }
