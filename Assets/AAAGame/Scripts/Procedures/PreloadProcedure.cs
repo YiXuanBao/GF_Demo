@@ -5,6 +5,7 @@ using GameFramework.Event;
 using GameFramework.Procedure;
 using UnityGameFramework.Runtime;
 using GameFramework.Fsm;
+using UnityEngine.AddressableAssets;
 
 public class PreloadProcedure : ProcedureBase
 {
@@ -24,6 +25,7 @@ public class PreloadProcedure : ProcedureBase
         GF.Event.Subscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDicFailure);
         GF.BuiltinView.ShowLoadingProgress();
         GF.LogInfo("进入HybridCLR热更流程! 预加载游戏数据...");
+        //await Addressables.InitializeAsync();
         InitAppSettings();
         PreloadAndInitData();
     }
@@ -56,7 +58,9 @@ public class PreloadProcedure : ProcedureBase
             InitGameFrameworkSettings();
             GF.LogInfo("预加载完成, 进入游戏场景.");
             procedureOwner.SetData<VarString>("NextScene", "Game");
-            ChangeState<ChangeSceneProcedure>(procedureOwner);
+            //ChangeState<ChangeSceneProcedure>(procedureOwner);
+            GF.Resource.UnloadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"));
+            Log.Debug(GF.Resource.HasAsset(UtilityBuiltin.ResPath.GetPrefab("Enemy")));
         }
     }
     private void InitAppSettings()
@@ -71,7 +75,7 @@ public class PreloadProcedure : ProcedureBase
             language = GFBuiltin.Localization.SystemLanguage;//默认语言跟随用户操作系统语言
         }
         var languageJson = UtilityBuiltin.ResPath.GetLanguagePath(language.ToString());
-        if (GF.Resource.HasAsset(languageJson) == GameFramework.Resource.HasAssetResult.NotExist)
+        if (!GF.Resource.HasAsset(languageJson))
         {
             language = GameFramework.Localization.Language.English;//不支持的语言默认用英文
         }
@@ -166,6 +170,10 @@ public class PreloadProcedure : ProcedureBase
     private void CreateGFExtension()
     {
         GF.Resource.LoadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"), typeof(GameObject), new GameFramework.Resource.LoadAssetCallbacks(OnLoadGFExtensionSuccess));
+
+        GF.Resource.LoadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"), typeof(GameObject), new GameFramework.Resource.LoadAssetCallbacks(OnLoadGFExtensionSuccess));
+
+        GF.Resource.LoadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"), typeof(GameObject), new GameFramework.Resource.LoadAssetCallbacks(OnLoadGFExtensionSuccess));
     }
     /// <summary>
     /// 加载配置
@@ -173,7 +181,7 @@ public class PreloadProcedure : ProcedureBase
     /// <param name="name"></param>
     private void LoadConfig(string name)
     {
-        //GF.Config.LoadConfig(name, this);
+        GF.Config.LoadConfig(name, this);
     }
     /// <summary>
     /// 加载数据表
@@ -181,18 +189,19 @@ public class PreloadProcedure : ProcedureBase
     /// <param name="name"></param>
     private void LoadDataTable(string name)
     {
-        //GF.DataTable.LoadDataTable(name, this);
+        GF.DataTable.LoadDataTable(name, this);
     }
 
     private void LoadLanguage()
     {
-        //GF.Localization.LoadLanguage(GF.Localization.Language.ToString(), this);
+        GF.Localization.LoadLanguage(GF.Localization.Language.ToString(), this);
     }
 
     private void OnLoadGFExtensionSuccess(string assetName, object asset, float duration, object userData)
     {
         var gfExtPfb = asset as GameObject;
-        if (null != GameObject.Instantiate(gfExtPfb, Vector3.zero, Quaternion.identity, GF.Base.transform))
+        var obj = GameObject.Instantiate(gfExtPfb, Vector3.zero, Quaternion.identity, GF.Base.transform);
+        if (null != obj)
         {
             GF.LogInfo("GF框架扩展成功!");
             loadedProgress++;

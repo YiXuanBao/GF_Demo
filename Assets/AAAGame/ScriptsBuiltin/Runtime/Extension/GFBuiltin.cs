@@ -15,11 +15,10 @@ public class GFBuiltin : MonoBehaviour
     public static EntityComponent Entity { get; private set; }
     public static EventComponent Event { get; private set; }
     public static FsmComponent Fsm { get; private set; }
-    public static FileSystemComponent FileSystem { get; private set; }
     public static LocalizationComponent Localization { get; private set; }
     public static NetworkComponent Network { get; private set; }
     public static ProcedureComponent Procedure { get; private set; }
-    public static AddressableResourceComponent Resource { get; private set; }
+    public static ResourceComponent Resource { get; private set; }
     public static SceneComponent Scene { get; private set; }
     public static SettingComponent Setting { get; private set; }
     public static SoundComponent Sound { get; private set; }
@@ -54,8 +53,7 @@ public class GFBuiltin : MonoBehaviour
         GFBuiltin.Procedure = GameEntry.GetComponent<ProcedureComponent>();
         GFBuiltin.Localization = GameEntry.GetComponent<LocalizationComponent>();
         GFBuiltin.Network = GameEntry.GetComponent<NetworkComponent>();
-        GFBuiltin.Resource = GameEntry.GetComponent<AddressableResourceComponent>();
-        GFBuiltin.FileSystem = GameEntry.GetComponent<FileSystemComponent>();
+        GFBuiltin.Resource = GameEntry.GetComponent<ResourceComponent>();
         GFBuiltin.Scene = GameEntry.GetComponent<SceneComponent>();
         GFBuiltin.Setting = GameEntry.GetComponent<SettingComponent>();
         GFBuiltin.Sound = GameEntry.GetComponent<SoundComponent>();

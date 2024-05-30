@@ -17,17 +17,7 @@ namespace GameFramework.Resource
         /// </summary>
         public LoadResourceAgentHelperUpdateEventArgs()
         {
-            Type = LoadResourceProgress.Unknown;
             Progress = 0f;
-        }
-
-        /// <summary>
-        /// 获取进度类型。
-        /// </summary>
-        public LoadResourceProgress Type
-        {
-            get;
-            private set;
         }
 
         /// <summary>
@@ -45,10 +35,9 @@ namespace GameFramework.Resource
         /// <param name="type">进度类型。</param>
         /// <param name="progress">进度。</param>
         /// <returns>创建的加载资源代理辅助器更新事件。</returns>
-        public static LoadResourceAgentHelperUpdateEventArgs Create(LoadResourceProgress type, float progress)
+        public static LoadResourceAgentHelperUpdateEventArgs Create(float progress)
         {
             LoadResourceAgentHelperUpdateEventArgs loadResourceAgentHelperUpdateEventArgs = ReferencePool.Acquire<LoadResourceAgentHelperUpdateEventArgs>();
-            loadResourceAgentHelperUpdateEventArgs.Type = type;
             loadResourceAgentHelperUpdateEventArgs.Progress = progress;
             return loadResourceAgentHelperUpdateEventArgs;
         }
@@ -58,7 +47,6 @@ namespace GameFramework.Resource
         /// </summary>
         public override void Clear()
         {
-            Type = LoadResourceProgress.Unknown;
             Progress = 0f;
         }
     }

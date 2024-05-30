@@ -101,7 +101,7 @@ public class LoadHotfixDllProcedure : ProcedureBase
     {
         GFBuiltin.LogInfo("开始加载热更新dll");
         var hotfixListFile = UtilityBuiltin.ResPath.GetCombinePath("Assets", ConstBuiltin.HOT_FIX_DLL_DIR, "HotfixFileList.txt");
-        if (GFBuiltin.Resource.HasAsset(hotfixListFile) == GameFramework.Resource.HasAssetResult.NotExist)
+        if (!GFBuiltin.Resource.HasAsset(hotfixListFile))
         {
             Log.Fatal("热更新dll列表文件不存在:{0}", hotfixListFile);
             return;

@@ -32,7 +32,7 @@ namespace UnityGameFramework.Runtime
                         }
                     }
 
-                    AddressableResourceComponent resourceCompoent = GameEntry.GetComponent<AddressableResourceComponent>();
+                    ResourceComponent resourceCompoent = GameEntry.GetComponent<ResourceComponent>();
                     if (resourceCompoent != null)
                     {
                         if (GUILayout.Button("Unload Unused Assets", GUILayout.Height(30f)))
