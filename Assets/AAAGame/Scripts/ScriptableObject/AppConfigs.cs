@@ -33,22 +33,6 @@ public class AppConfigs : ScriptableObject
         mInstance = this;
     }
 
-
-#if UNITY_EDITOR
-    /// <summary>
-    /// 编辑器下获取实例
-    /// </summary>
-    /// <returns></returns>
-    public static AppConfigs GetInstanceEditor()
-    {
-        if (mInstance == null)
-        {
-            var configAsset = UtilityBuiltin.ResPath.GetScriptableAsset("AppConfigs");
-            mInstance = AssetDatabase.LoadAssetAtPath<AppConfigs>(configAsset);
-        }
-        return mInstance;
-    }
-#endif
     /// <summary>
     /// 运行时获取实例
     /// </summary>
