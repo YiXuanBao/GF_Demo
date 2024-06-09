@@ -1,8 +1,11 @@
 using GameFramework.Fsm;
 using GameFramework.Procedure;
+using GameFramework.Resource;
+using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityGameFramework.Runtime;
 
 public class CheckAndUpdateProcedure : ProcedureBase
 {
@@ -12,25 +15,37 @@ public class CheckAndUpdateProcedure : ProcedureBase
     protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
     {
         base.OnEnter(procedureOwner);
-        initComplete = false;
-        var handle = Addressables.GetDownloadSizeAsync("all");
-        handle.Completed += (aoh) =>
+
+        var resourceCom = GFBuiltin.Resource;
+
+        bool needUpdate = resourceCom.CheckUpdate();
+
+        if (needUpdate)
         {
-            if (aoh.Status == AsyncOperationStatus.Succeeded)
-            {
-                long size = aoh.Result;
-                if (size <= 0)
-                {
-                    Debug.Log("dont need update");
-                    initComplete = true;
-                }
-                else
-                {
-                    Debug.Log("need update, size: " + size);
-                    DownloadAssets();
-                }
-            }
-        };
+            initComplete = false;
+            resourceCom.UpdateResource(new UpdateResourceCallbacks(OnDownloadSuccess, OnDownloadFailure, OnDownloadUpdate), null);
+        }
+        else
+        {
+            initComplete = true;
+        }
+    }
+
+    private void OnDownloadUpdate(float progress, float downloadKBSize, float downloadSpeed, float remainingTime, object userData)
+    {
+        Log.Info("progress={0},downloadKBSize={1},downloadSpeed={2},remainingTime={3}", progress, downloadKBSize, downloadSpeed, remainingTime);
+    }
+
+    private void OnDownloadFailure(string errorMessage, object userData)
+    {
+        Log.Error("OnDownloadFailure, error {0}", errorMessage);
+        initComplete = true;
+    }
+
+    private void OnDownloadSuccess(float duration, object userData)
+    {
+        Log.Info("OnDownloadSuccess, duration = {0}", duration);
+        initComplete = true;
     }
 
     protected override void OnUpdate(IFsm<IProcedureManager> procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -40,21 +55,5 @@ public class CheckAndUpdateProcedure : ProcedureBase
         {
             ChangeState<LoadHotfixDllProcedure>(procedureOwner);
         }
-    }
-
-    private void DownloadAssets()
-    {
-        var handle = Addressables.DownloadDependenciesAsync("all");
-        
-        handle.Completed += (aoh) =>
-        {
-            if (aoh.Status == AsyncOperationStatus.Succeeded)
-            {
-                Debug.Log("下载完成");
-                Debug.Log("共下载 " + handle.GetDownloadStatus().TotalBytes);
-                Addressables.Release(aoh);
-                initComplete = true;
-            }
-        };
     }
 }

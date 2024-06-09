@@ -5,7 +5,6 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
-using GameFramework.ObjectPool;
 using System;
 using System.Collections.Generic;
 
@@ -21,6 +20,7 @@ namespace GameFramework.Resource
 
         private IResourceHelper m_ResourceHelper;
         private ResourceLoader m_ResourceLoader;
+        private ResourceVersion m_ResourceVersion;
 
         /// <summary>
         /// 获取资源只读区路径。
@@ -128,6 +128,7 @@ namespace GameFramework.Resource
         public ResourceManager()
         {
             m_ResourceLoader = new ResourceLoader(this);
+            m_ResourceVersion = new ResourceVersion(this);
             m_ResourceHelper = null;
             m_ReadOnlyPath = null;
             m_ReadWritePath = null;
@@ -425,37 +426,6 @@ namespace GameFramework.Resource
             m_ResourceLoader.UnloadScene(sceneAssetName, unloadSceneCallbacks, userData);
         }
 
-        /// <summary>
-        /// 获取二进制资源的实际路径。
-        /// </summary>
-        /// <param name="binaryAssetName">要获取实际路径的二进制资源的名称。</param>
-        /// <returns>二进制资源的实际路径。</returns>
-        /// <remarks>此方法仅适用于二进制资源存储在磁盘（而非文件系统）中的情况。若二进制资源存储在文件系统中时，返回值将始终为空。</remarks>
-        public string GetBinaryPath(string binaryAssetName)
-        {
-            if (string.IsNullOrEmpty(binaryAssetName))
-            {
-                throw new GameFrameworkException(Utility.Text.Format("Binary asset name {0} is invalid.", binaryAssetName));
-            }
-
-            return m_ResourceLoader.GetBinaryPath(binaryAssetName);
-        }
-
-        /// <summary>
-        /// 获取二进制资源的长度。
-        /// </summary>
-        /// <param name="binaryAssetName">要获取长度的二进制资源的名称。</param>
-        /// <returns>二进制资源的长度。</returns>
-        public int GetBinaryLength(string binaryAssetName)
-        {
-            if (string.IsNullOrEmpty(binaryAssetName))
-            {
-                throw new GameFrameworkException(Utility.Text.Format("Binary asset name {0} is invalid.", binaryAssetName));
-            }
-
-            return m_ResourceLoader.GetBinaryLength(binaryAssetName);
-        }
-
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
             m_ResourceLoader.Update(elapseSeconds, realElapseSeconds);
@@ -502,6 +472,19 @@ namespace GameFramework.Resource
             m_ResourceLoader.SetResourceHelper(m_ResourceHelper);
         }
 
+        public void SetResourceVersionHelper(IResourceVersionHelper resourceVersionHelper)
+        {
+            m_ResourceVersion.SetResourceVersionHelper(resourceVersionHelper);
+        }
 
+        public bool CheckUpdate()
+        {
+            return m_ResourceVersion.CheckUpdate();
+        }
+
+        public void UpdateResource(UpdateResourceCallbacks updateResourceCallbacks, object userData)
+        {
+            m_ResourceVersion.UpdateResource(updateResourceCallbacks, userData);
+        }
     }
 }

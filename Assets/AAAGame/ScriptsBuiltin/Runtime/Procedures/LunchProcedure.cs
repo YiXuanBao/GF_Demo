@@ -10,6 +10,7 @@ public class LunchProcedure : ProcedureBase
     {
         base.OnEnter(procedureOwner);
         this.InitSettings();
+
         ChangeState(procedureOwner, GFBuiltin.Base.EditorResourceMode ? typeof(LoadHotfixDllProcedure) : typeof(CheckAndUpdateProcedure));
     }
 

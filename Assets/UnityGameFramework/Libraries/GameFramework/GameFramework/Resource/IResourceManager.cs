@@ -265,18 +265,20 @@ namespace GameFramework.Resource
         void UnloadScene(string sceneAssetName, UnloadSceneCallbacks unloadSceneCallbacks, object userData);
 
         /// <summary>
-        /// 获取二进制资源的实际路径。
+        /// 设置版本辅助器
         /// </summary>
-        /// <param name="binaryAssetName">要获取实际路径的二进制资源的名称。</param>
-        /// <returns>二进制资源的实际路径。</returns>
-        /// <remarks>此方法仅适用于二进制资源存储在磁盘（而非文件系统）中的情况。若二进制资源存储在文件系统中时，返回值将始终为空。</remarks>
-        string GetBinaryPath(string binaryAssetName);
+        /// <param name="resourceVersionHelper"></param>
+        void SetResourceVersionHelper(IResourceVersionHelper resourceVersionHelper);
 
         /// <summary>
-        /// 获取二进制资源的长度。
+        /// 检查更新
         /// </summary>
-        /// <param name="binaryAssetName">要获取长度的二进制资源的名称。</param>
-        /// <returns>二进制资源的长度。</returns>
-        int GetBinaryLength(string binaryAssetName);
+        /// <param name="needUpdate"></param>
+        bool CheckUpdate();
+
+        /// <summary>
+        /// 更新资源
+        // </summary>
+        void UpdateResource(UpdateResourceCallbacks updateResourceCallbacks, object userData);
     }
 }

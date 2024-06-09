@@ -20,6 +20,7 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/Resource")]
     public sealed class ResourceComponent : GameFrameworkComponent
     {
+        #region Field
         private const int DefaultPriority = 0;
 
         private IResourceManager m_ResourceManager = null;
@@ -221,6 +222,7 @@ namespace UnityGameFramework.Runtime
                 return m_ResourceManager.LoadWaitingTaskCount;
             }
         }
+        #endregion
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -300,6 +302,8 @@ namespace UnityGameFramework.Runtime
             {
                 AddLoadResourceAgentHelper(i);
             }
+
+            m_ResourceManager.SetResourceVersionHelper(new DefaultResourceVersionHelper());
         }
 
         private void Update()
@@ -508,27 +512,6 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取二进制资源的实际路径。
-        /// </summary>
-        /// <param name="binaryAssetName">要获取实际路径的二进制资源的名称。</param>
-        /// <returns>二进制资源的实际路径。</returns>
-        /// <remarks>此方法仅适用于二进制资源存储在磁盘（而非文件系统）中的情况。若二进制资源存储在文件系统中时，返回值将始终为空。</remarks>
-        public string GetBinaryPath(string binaryAssetName)
-        {
-            return m_ResourceManager.GetBinaryPath(binaryAssetName);
-        }
-
-        /// <summary>
-        /// 获取二进制资源的长度。
-        /// </summary>
-        /// <param name="binaryAssetName">要获取长度的二进制资源的名称。</param>
-        /// <returns>二进制资源的长度。</returns>
-        public int GetBinaryLength(string binaryAssetName)
-        {
-            return m_ResourceManager.GetBinaryLength(binaryAssetName);
-        }
-
-        /// <summary>
         /// 增加加载资源代理辅助器。
         /// </summary>
         /// <param name="index">加载资源代理辅助器索引。</param>
@@ -547,6 +530,16 @@ namespace UnityGameFramework.Runtime
             transform.localScale = Vector3.one;
 
             m_ResourceManager.AddLoadResourceAgentHelper(loadResourceAgentHelper);
+        }
+
+        public bool CheckUpdate()
+        {
+            return m_ResourceManager.CheckUpdate();
+        }
+
+        public void UpdateResource(UpdateResourceCallbacks updateResourceCallbacks, object userData)
+        {
+            m_ResourceManager.UpdateResource(updateResourceCallbacks, userData);
         }
     }
 }

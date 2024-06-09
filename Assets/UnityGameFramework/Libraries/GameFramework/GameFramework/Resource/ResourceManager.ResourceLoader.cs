@@ -246,28 +246,6 @@ namespace GameFramework.Resource
             }
 
             /// <summary>
-            /// 获取二进制资源的实际路径。
-            /// </summary>
-            /// <param name="binaryAssetName">要获取实际路径的二进制资源的名称。</param>
-            /// <returns>二进制资源的实际路径。</returns>
-            /// <remarks>此方法仅适用于二进制资源存储在磁盘（而非文件系统）中的情况。若二进制资源存储在文件系统中时，返回值将始终为空。</remarks>
-            public string GetBinaryPath(string binaryAssetName)
-            {
-                return "";
-            }
-
-            /// <summary>
-            /// 获取二进制资源的长度。
-            /// </summary>
-            /// <param name="binaryAssetName">要获取长度的二进制资源的名称。</param>
-            /// <returns>二进制资源的长度。</returns>
-            public int GetBinaryLength(string binaryAssetName)
-            {
-                
-                return 0;
-            }
-
-            /// <summary>
             /// 获取所有加载资源任务的信息。
             /// </summary>
             /// <returns>所有加载资源任务的信息。</returns>
