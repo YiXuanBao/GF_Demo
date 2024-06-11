@@ -37,7 +37,7 @@ namespace UnityGameFramework.Runtime
         private IEnumerator UnloadSceneCo(SceneInstance sceneInstance, UnloadSceneCallbacks unloadSceneCallbacks, object userData)
         {
             Log.Debug($"UnloadScene {sceneInstance.Scene.name}");
-            AsyncOperationHandle asyncOperationHandle = Addressables.UnloadSceneAsync(sceneInstance);
+            AsyncOperationHandle asyncOperationHandle = Addressables.UnloadSceneAsync(sceneInstance, false);
 
             yield return asyncOperationHandle;
 
@@ -55,6 +55,8 @@ namespace UnityGameFramework.Runtime
                     unloadSceneCallbacks.UnloadSceneFailureCallback(sceneInstance.Scene.name, userData);
                 }
             }
+
+            Addressables.Release(asyncOperationHandle);
         }
 
         public override bool HasAsset(string assetName)
@@ -63,7 +65,11 @@ namespace UnityGameFramework.Runtime
 
             asyncOperationHandle.WaitForCompletion();
 
-            return asyncOperationHandle.Result.Count > 0;
+            bool result = asyncOperationHandle.Result.Count > 0;
+
+            Addressables.Release(asyncOperationHandle);
+
+            return result;
         }
     }
 }

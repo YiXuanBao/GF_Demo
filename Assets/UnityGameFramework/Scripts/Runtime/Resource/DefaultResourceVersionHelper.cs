@@ -10,119 +10,115 @@ namespace UnityGameFramework.Runtime
 {
     public class DefaultResourceVersionHelper : IResourceVersionHelper
     {
-        private bool m_IsCheckUpdate;
-        private AsyncOperationHandle<List<string>> m_CheckHandle;
-
         public bool CheckUpdate()
         {
             //检查更新信息
             Log.Info("AddressableVersion CheckUpdate");
-            var initHandle = Addressables.InitializeAsync();
-            initHandle.WaitForCompletion();
-            if (m_IsCheckUpdate)
-            {
-                Addressables.Release(m_CheckHandle);
-                m_IsCheckUpdate = false;
-            }
-            Log.Info("CheckForCatalogUpdates");
-            m_CheckHandle = Addressables.CheckForCatalogUpdates(false);
-            m_IsCheckUpdate = true;
-            m_CheckHandle.WaitForCompletion();
-            Log.Info($"Check Result Count:{m_CheckHandle.Result.Count}");
 
-            foreach (var item in m_CheckHandle.Result)
+            var checkHandle = Addressables.CheckForCatalogUpdates(false);
+            checkHandle.WaitForCompletion();
+
+            var updateList = checkHandle.Result;
+            Addressables.Release(checkHandle);
+
+            Log.Info($"Check Result Count:{updateList.Count}");
+
+            foreach (var item in updateList)
             {
                 Log.Info($"Check Result :{item}");
             }
 
-            return m_CheckHandle.Result.Count > 0;
+            bool result = updateList.Count > 0;
+
+            return result;
         }
 
         public async void UpdateResource(UpdateResourceCallbacks updateResourceCallbacks, object userData)
         {
             try
             {
-                if (m_CheckHandle.IsDone)
+                var checkHandle = Addressables.CheckForCatalogUpdates(false);
+                checkHandle.WaitForCompletion();
+
+                var updateList = checkHandle.Result;
+                Addressables.Release(checkHandle);
+
+                string label = userData as string;
+                bool hasLabel = !string.IsNullOrEmpty(label);
+
+                if (updateList.Count > 0)
                 {
-                    string label = userData as string;
-                    bool hasLabel = !string.IsNullOrEmpty(label);
+                    var updateHandle = Addressables.UpdateCatalogs(updateList, false);
+                    updateHandle.WaitForCompletion();
 
-                    if (m_CheckHandle.Result.Count > 0)
+                    var locators = updateHandle.Result;
+                    Addressables.Release(updateHandle);
+
+                    HashSet<object> downloadKeys = new HashSet<object>();
+                    long totalDownloadSize = 0;
+                    foreach (var locator in locators)
                     {
-                        var updateHandle = Addressables.UpdateCatalogs(m_CheckHandle.Result, false);
-                        updateHandle.WaitForCompletion();
+                        Log.Info($"Update locator:{locator.LocatorId}");
 
-                        var locators = updateHandle.Result;
-                        HashSet<object> downloadKeys = new HashSet<object>();
-                        long totalDownloadSize = 0;
-                        foreach (var locator in locators)
+                        var sizeHandle = Addressables.GetDownloadSizeAsync(locator.Keys);
+                        sizeHandle.WaitForCompletion();
+
+                        long downloadSize = sizeHandle.Result;
+                        Addressables.Release(sizeHandle);
+
+                        if (downloadSize > 0)
                         {
-                            Log.Info($"Update locator:{locator.LocatorId}");
-
-                            var sizeHandle = Addressables.GetDownloadSizeAsync(locator.Keys);
-                            sizeHandle.WaitForCompletion();
-                            long downloadSize = sizeHandle.Result;
-                            if (downloadSize > 0)
+                            if (hasLabel)
                             {
-                                if (hasLabel)
+                                foreach (var key in locator.Keys)
                                 {
-                                    foreach (var key in locator.Keys)
+                                    if (key.ToString().Equals(label))
                                     {
-                                        if (key.ToString().Equals(label))
-                                        {
-                                            totalDownloadSize += downloadSize;
-                                            downloadKeys.Add(key);
-                                            Log.Info($"download key: {key}");
-                                            break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    totalDownloadSize += downloadSize;
-                                    foreach (var key in locator.Keys)
-                                    {
+                                        totalDownloadSize += downloadSize;
                                         downloadKeys.Add(key);
-                                        Log.Info($"locator[{locator}] size:{downloadSize} key:{key}");
+                                        Log.Info($"download key: {key}");
+                                        break;
                                     }
                                 }
                             }
-                        }
-
-                        DateTime downloadStartTime = DateTime.UtcNow;
-                        if (totalDownloadSize > 0)
-                        {
-                            float downloadKBSize = totalDownloadSize / 1024.0f;
-                            var downloadHandle = Addressables.DownloadDependenciesAsync(downloadKeys, Addressables.MergeMode.Union);
-                            while (!downloadHandle.IsDone)
+                            else
                             {
-                                float percentage = downloadHandle.PercentComplete;
-                                float useTime = (float)(DateTime.UtcNow - downloadStartTime).TotalSeconds;
-                                float downloadSpeed = (percentage * downloadKBSize) / useTime;
-                                float remainingTime = (float)((downloadKBSize / downloadSpeed) / downloadSpeed - useTime);
-                               
-                                if (updateResourceCallbacks.UpdateResourceUpdateCallback != null)
+                                totalDownloadSize += downloadSize;
+                                foreach (var key in locator.Keys)
                                 {
-                                    updateResourceCallbacks.UpdateResourceUpdateCallback(percentage, downloadKBSize, downloadSpeed, remainingTime, userData);
+                                    downloadKeys.Add(key);
+                                    Log.Info($"locator[{locator}] size:{downloadSize} key:{key}");
                                 }
-
-                                //allback?.Invoke(percentage, downloadKBSize, downloadSpeed, remainingTime);
-                                await Task.Delay(500);
                             }
-                            Addressables.Release(downloadHandle);
                         }
-
-                        float duration = (float)(DateTime.UtcNow - downloadStartTime).TotalSeconds;
-                        if (updateResourceCallbacks.UpdateResourceSuccessCallback != null)
-                        {
-                            updateResourceCallbacks.UpdateResourceSuccessCallback(duration, userData);
-                        }
-
-                        //downloadComplete?.Invoke();
-                        Addressables.Release(updateHandle);
                     }
-                    Addressables.Release(m_CheckHandle);
-                    m_IsCheckUpdate = false;
+
+                    DateTime downloadStartTime = DateTime.UtcNow;
+                    if (totalDownloadSize > 0)
+                    {
+                        float downloadKBSize = totalDownloadSize / 1024.0f;
+                        var downloadHandle = Addressables.DownloadDependenciesAsync(downloadKeys, Addressables.MergeMode.Union);
+                        while (!downloadHandle.IsDone)
+                        {
+                            float percentage = downloadHandle.PercentComplete;
+                            float useTime = (float)(DateTime.UtcNow - downloadStartTime).TotalSeconds;
+                            float downloadSpeed = (percentage * downloadKBSize) / useTime;
+                            float remainingTime = (float)((downloadKBSize / downloadSpeed) / downloadSpeed - useTime);
+
+                            if (updateResourceCallbacks.UpdateResourceUpdateCallback != null)
+                            {
+                                updateResourceCallbacks.UpdateResourceUpdateCallback(percentage, downloadKBSize, downloadSpeed, remainingTime, userData);
+                            }
+                            await Task.Delay(100);
+                        }
+                        Addressables.Release(downloadHandle);
+                    }
+
+                    float duration = (float)(DateTime.UtcNow - downloadStartTime).TotalSeconds;
+                    if (updateResourceCallbacks.UpdateResourceSuccessCallback != null)
+                    {
+                        updateResourceCallbacks.UpdateResourceSuccessCallback(duration, userData);
+                    }
                 }
             }
             catch (GameFrameworkException e)
@@ -131,7 +127,6 @@ namespace UnityGameFramework.Runtime
                 {
                     updateResourceCallbacks.UpdateResourceFailureCallback(e.Message, userData);
                 }
-                //errorCallback?.Invoke(e.Message, e.ToString());
             }
         }
     }

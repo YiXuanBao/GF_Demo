@@ -150,9 +150,6 @@ namespace UnityGameFramework.Runtime
                         LoadResourceAgentHelperLoadCompleteEventArgs loadResourceAgentHelperLoadCompleteEventArgs = LoadResourceAgentHelperLoadCompleteEventArgs.Create(m_AsyncOperationHandle.Value.Result);
                         m_LoadResourceAgentHelperLoadCompleteEventHandler(this, loadResourceAgentHelperLoadCompleteEventArgs);
                         ReferencePool.Release(loadResourceAgentHelperLoadCompleteEventArgs);
-                        m_AssetName = null;
-                        m_LastProgress = 0f;
-                        m_AsyncOperationHandle = null;
                     }
                     else
                     {
@@ -160,6 +157,9 @@ namespace UnityGameFramework.Runtime
                         m_LoadResourceAgentHelperErrorEventHandler(this, loadResourceAgentHelperErrorEventArgs);
                         ReferencePool.Release(loadResourceAgentHelperErrorEventArgs);
                     }
+                    m_AssetName = null;
+                    m_LastProgress = 0f;
+                    m_AsyncOperationHandle = null;
                 }
                 else if (m_AsyncOperationHandle.Value.PercentComplete != m_LastProgress)
                 {

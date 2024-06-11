@@ -10,13 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: GFExtension
   m_EditorClassIdentifier: 
-  m_GroupName: Default Local Group
+  m_GroupName: GFExtension
   m_Data:
     m_SerializedData: []
   m_GUID: 46ae68eaabdbaba46961557bf9be389d
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: f05e8bb3fad2fe544809862f3a86c078
+    m_Address: Assets/AAAGame/Prefabs/GFExtension.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e3800a8a216a2de4f9cd86ee4568b778, type: 2}
   m_SchemaSet:

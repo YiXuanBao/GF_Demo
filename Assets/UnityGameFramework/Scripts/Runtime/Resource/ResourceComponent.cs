@@ -10,6 +10,7 @@ using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace UnityGameFramework.Runtime
 {
@@ -234,6 +235,9 @@ namespace UnityGameFramework.Runtime
 
         private void Start()
         {
+            var initHandle = Addressables.InitializeAsync();
+            initHandle.WaitForCompletion();
+
             BaseComponent baseComponent = GameEntry.GetComponent<BaseComponent>();
             if (baseComponent == null)
             {

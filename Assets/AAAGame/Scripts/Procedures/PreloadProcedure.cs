@@ -60,7 +60,6 @@ public class PreloadProcedure : ProcedureBase
             procedureOwner.SetData<VarString>("NextScene", "Game");
             //ChangeState<ChangeSceneProcedure>(procedureOwner);
             GF.Resource.UnloadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"));
-            Log.Debug(GF.Resource.HasAsset(UtilityBuiltin.ResPath.GetPrefab("Enemy")));
         }
     }
     private void InitAppSettings()
@@ -169,10 +168,6 @@ public class PreloadProcedure : ProcedureBase
     }
     private void CreateGFExtension()
     {
-        GF.Resource.LoadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"), typeof(GameObject), new GameFramework.Resource.LoadAssetCallbacks(OnLoadGFExtensionSuccess));
-
-        GF.Resource.LoadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"), typeof(GameObject), new GameFramework.Resource.LoadAssetCallbacks(OnLoadGFExtensionSuccess));
-
         GF.Resource.LoadAsset(UtilityBuiltin.ResPath.GetPrefab("GFExtension"), typeof(GameObject), new GameFramework.Resource.LoadAssetCallbacks(OnLoadGFExtensionSuccess));
     }
     /// <summary>
